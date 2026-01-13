@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/x-icon" href="/tablogo.png">
+  
+  <style>
+    .S9gUrf-YoZ4jf, .S9gUrf-YoZ4jf *
+    {
+      margin:0 auto!important;
+    }
+    .login-container {
+  margin-top: 5%;
+  background: white;
+  border-radius: 12px;
+  
+}
+.form-text {
+  color: #d32f2f; /* Material red */
+}
+
+.error {
+  border-color: #d32f2f !important;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"],
+input[type="number"],
+button.btn {
+  border-radius: 6px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus,
+button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+#g_id_onload, .g_id_signin {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+    .password-toggle {
+        background-color:white;
+        border:none;
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+    body {
+  background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+  </style>
+  
+</head>
+<body onload="captcha()">
+
+<div class="container" style="margin-top:5%;">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-sm-8 col-10" style="background-color: white;border:10px solid white;border-radius:10px!important">
+      <div class="login-container">
+        <div class="text-center mb-4">
+          <h2>Login or <a href="create_account.php">Create a new Account</a></h2>
+        </div>
+<form action="login.php" style="padding-bottom: 10px;" method="post" onsubmit="return validateCaptcha()">
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <div class="input-group">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+            <div class="input-group-append">
+                <span class="input-group-text password-toggle" onclick="togglePasswordVisibility()"><i id="eyeIcon" class="fas fa-eye"></i></span>
+            </div>
+        </div>
+    </div>
+   <div class="form-group d-flex align-items-center">
+    <input type="text" class="form-control mr-2" id="cap" disabled style="text-decoration:line-through">
+    
+    <button type="button" class="btn btn-primary" onclick="captcha()"><i class="fa-solid fa-arrows-rotate"></i></button>
+
+</div>
+    <div class="form-group">
+        <label for="captcha">Captcha:</label>
+        <input type="text" class="form-control" id="captchaInput" required>
+        <div id="captchaError" class="invalid-feedback"></div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+  <center><h6 style="padding:10px">Forgot Password ? <a href="fpass.html">Click here </a></h6></center>
+</form>
+<div style="text-align:center; margin: 20px 0;" class="btn-block">
+  <div id="g_id_onload"
+       data-client_id="78541695364-o7uo5akjgbtim5gdf31vdikojndcfqmc.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
+
+  <div class="g_id_signin"
+       data-type="standard"
+       data-size="large"
+       data-theme="outline"
+       data-text="sign_in_with"
+       data-shape="rectangular"
+       data-logo_alignment="left">
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+function encodePasswordToUnicode(form) 
+{
+    // Get the password input value
+    var password = document.getElementById("password").value;
+
+    var encodedPassword = "";
+
+    // Loop through each character of the password
+    for (var i = 0; i < password.length; i++) {
+        // Get the Unicode code point of the current character
+        var unicodeValue = String.fromCharCode(password.charCodeAt(i)+3);
+        console.log(unicodeValue);
+
+        // Append the Unicode code point to the encoded password string
+        encodedPassword += unicodeValue.toString() + "";
+    }
+    
+    // Set the encoded password back to the password input field
+    document.getElementById("password").value="";
+    document.getElementById("password").value = encodedPassword.trim();
+        form.submit();
+
+    // Prevent default form submission
+    return false;
+}
+
+  function togglePasswordVisibility() {
+    var passwordField = document.getElementById("password");
+    var eyeIcon = document.getElementById("eyeIcon");
+    
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      eyeIcon.className = "fas fa-eye-slash";
+    } else {
+      passwordField.type = "password";
+      eyeIcon.className = "fas fa-eye";
+    }
+  }
+  function captcha()
+{
+const x1="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#&$!?%";
+xy="";
+for(i=1;i<9;i++)
+{
+xy+=x1.charAt(Math.random()*x1.length);
+}
+ document.getElementById("cap").value=xy; 
+}
+    function validateCaptcha() {
+    var captchaInput = document.getElementById("captchaInput").value;
+    var generatedCaptcha = document.getElementById("cap").value;
+
+    if (captchaInput !== generatedCaptcha) {
+        var captchaError = document.getElementById("captchaError");
+        captchaError.textContent = "Captcha does not match. Please try again.";
+        captchaError.style.display = "block";
+        return false; // Prevent form submission
+    }
+//  encodePasswordToUnicode(document.querySelector("form"));
+
+    // Prevent default form submission
+    return true;
+} 
+document.getElementById("cap").addEventListener("copy", function(event) {
+    event.preventDefault();
+});
+document.getElementById("cap").addEventListener("select", function(event) {
+    event.preventDefault();
+});
+</script>
+<!-- Google Sign-In Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+
+
+<script>
+  function handleCredentialResponse(response) {
+  fetch('google-login.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'id_token=' + encodeURIComponent(response.credential)
+  })
+  .then(res => res.text())
+  .then(data => {
+    console.log("Google login response:", data); // helpful for debug
+    if (data.includes('success')) {
+      window.location.href = 'index.php';
+    } else {
+      alert("Google Login failed:" + data);
+    }
+  })
+  .catch(error => {
+    console.error("Fetch failed:", error);
+    alert("Error: " + error.message);
+  });
+}
+
+</script>
+
+</body>
+</html>
